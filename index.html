@@ -17,6 +17,11 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            cursor: none;
+        }
+        /* Override interactive elements too */
+        a, button {
+        cursor: none !important;
         }
         
         body {
@@ -106,9 +111,8 @@
         
         /* Fade-in Animations */
         .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeIn 1s ease-out forwards;
+        opacity: 0;
+        animation: fadeInOpacity 1s ease-out forwards;
         }
         
         .fade-in-delay-1 { animation-delay: 0.2s; }
@@ -116,11 +120,10 @@
         .fade-in-delay-3 { animation-delay: 0.6s; }
         .fade-in-delay-4 { animation-delay: 0.8s; }
         
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes fadeInOpacity {
+        to {
+            opacity: 1;
+        }
         }
         
         /* Navigation Dots */
@@ -187,8 +190,9 @@
         }
         
         html {
-            scroll-snap-type: y proximity;
+            scroll-snap-type: y mandatory;
         }
+
         
         /* Soft Pastel Colors */
         .text-lavender { color: #E6E6FA; }
@@ -265,9 +269,103 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        /* ───────────────────────────────────────── */
+        /* Custom cursor */
+        .custom-cursor {
+        position: fixed;
+        width: 24px;              /* up from 20 */
+        height: 24px;
+        border: 2px solid rgba(255,255,255,0.7);  /* thicker & whiter */
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transition: all 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+        backdrop-filter: blur(2px);               /* stronger blur */
+        }
+        .custom-cursor.expanded {
+        width: 48px;              /* up from 40 */
+        height: 48px;
+        border-color: rgba(255,255,255,0.9);      /* almost solid white */
+        backdrop-filter: blur(3px);               /* even stronger */
+        }
+
+        /* Click ripple */
+        /* ─── brighter, fixed‑position ripple ─── */
+        .ripple {
+        position: fixed;                /* stick to viewport rather than document flow */
+        z-index: 9998;                  /* just under your cursor (9999), but above content (1) */
+        border: 2px solid rgba(255,255,255,0.6);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: rippleEffect 2s ease-out;
+        }
+
+        @keyframes rippleEffect {
+        0% {
+            width: 0;
+            height: 0;
+            opacity: 0.6;
+            transform: translate(-50%,-50%) scale(0);
+        }
+        100% {
+            width: 200px;
+            height: 200px;
+            opacity: 0;
+            transform: translate(-50%,-50%) scale(1);
+        }
+        }
+        /* hidden-by-default extra cards */
+        .extra-card {
+        display: none;              /* keep them out of layout */
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        /* when we toggle “show”, slide up + fade in */
+        .extra-card.show {
+        display: block;             /* bring back into layout */
+        opacity: 1;
+        transform: translateY(0);
+        }
+        /* Play-button styling */
+        .play-button {
+        border: none;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        }
+        .play-button:hover {
+        transform: scale(1.1);
+        }
+
+        /* Waveform bars */
+        .waveform .wave {
+        width: 3px; height: 12px;
+        background: rgba(255,255,255,0.8);
+        display: inline-block;
+        animation: wave 1s infinite ease-in-out paused;  /* ← start paused */
+        }
+        .waveform.playing .wave {
+        animation-play-state: running;                   /* ← run only when playing */
+        }
+        .waveform .wave:nth-child(1) { animation-delay: 0s; }
+        .waveform .wave:nth-child(2) { animation-delay: 0.2s; }
+        .waveform .wave:nth-child(3) { animation-delay: 0.4s; }
+        .waveform .wave:nth-child(4) { animation-delay: 0.6s; }
+        .waveform .wave:nth-child(5) { animation-delay: 0.8s; }
+        .waveform .wave:nth-child(6) { animation-delay: 1.0s; }
+        .waveform .wave:nth-child(7) { animation-delay: 1.2s; }
+        .waveform .wave:nth-child(8) { animation-delay: 1.4s; }
+
+        @keyframes wave {
+        0%, 100% { transform: scaleY(0.5); }
+        50%     { transform: scaleY(1.5); }
+        }
+
     </style>
 </head>
 <body class="text-white">
+    <div id="cursor" class="custom-cursor"></div>
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-spinner"></div>
@@ -311,12 +409,11 @@
                     Drift effortlessly into tranquility with our curated collection of calming experiences designed to soothe your soul and elevate your spirit.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 fade-in fade-in-delay-2">
-                    <button class="dream-button px-10 py-4 rounded-full text-lg">
-                        Begin Journey
-                    </button>
-                    <button class="dream-button px-10 py-4 rounded-full text-lg">
-                        Learn More
-                    </button>
+                    <a href="#about">
+                        <button class="dream-button px-10 py-4 rounded-full text-lg">
+                            Begin Journey
+                        </button>
+                    </a>                    
                 </div>
             </div>
         </section>
@@ -338,13 +435,18 @@
                     </div>
                     <div class="lg:w-1/2 fade-in fade-in-delay-1">
                         <div class="glass-card tilt-card breathing p-8 rounded-3xl">
-                            <div class="aspect-w-16 aspect-h-9 rounded-2xl overflow-hidden mb-6">
-                                <div class="w-full h-64 md:h-80 bg-gradient-to-br from-lavender to-sky-blue bg-opacity-20 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-32 w-32 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
+                            <div class="aspect-w-3 aspect-h-2 rounded-2xl overflow-hidden mb-6">
+                                <video
+                                  src="Assets/Videos/Intro.mp4"
+                                  class="w-full h-full object-cover"
+                                  autoplay
+                                  loop
+                                  muted
+                                  playsinline
+                                >
+                                  Your browser doesn’t support HTML5 video.
+                                </video>
+                              </div>                              
                             </div>
                             <div class="flex items-center">
                                 <div class="w-14 h-14 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
@@ -366,61 +468,129 @@
         <!-- Features Section -->
         <section id="features" class="section relative">
             <div class="container mx-auto px-6 relative z-10">
-                <div class="text-center mb-16 fade-in">
-                    <h2 class="title-font text-4xl md:text-6xl font-light mb-6 text-peach">
-                        Gentle Features
-                    </h2>
-                    <p class="max-w-3xl mx-auto text-lg md:text-xl font-light opacity-90">
-                        Designed with care to support your journey inward
+            <div class="text-center mb-16 fade-in">
+                <h2 class="title-font text-4xl md:text-6xl font-light mb-6 text-peach">
+                Gentle Features
+                </h2>
+                <p class="max-w-3xl mx-auto text-lg md:text-xl font-light opacity-90">
+                Designed with care to support your journey inward
+                </p>
+            </div>
+            
+            <!-- Top row: all 3 now tilt on hover -->
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <!-- 1) Affirmations (moved into Sleep Stories slot) -->
+                <div class="glass-card tilt-card p-8 rounded-3xl fade-in fade-in-delay-1">
+                    <div class="flex items-center mb-6">
+                      <!-- Play button + waveform wrapper -->
+                      <div class="relative flex items-center">
+                        <button id="affirmationPlay" class="play-button flex items-center justify-center w-12 h-12 rounded-full bg-lavender">
+                          <!-- ▶ play icon -->
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 4l12 6-12 6V4z" />
+                          </svg>
+                        </button>
+                        <!-- hidden audio element -->
+                        <audio id="affirmationAudio" src="Assets/Audios/I am rooted.m4a"></audio>
+                      </div>
+                      <!-- waveform -->
+                      <!-- waveform: start paused, 8 bars for a longer look -->
+                    <div class="waveform flex space-x-1 ml-4">
+                        <span class="wave"></span>
+                        <span class="wave"></span>
+                        <span class="wave"></span>
+                        <span class="wave"></span>
+                        <span class="wave"></span>
+                        <span class="wave"></span>
+                        <span class="wave"></span>
+                        <span class="wave"></span>
+                    </div>
+  
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-light mb-4">Affirmations</h3>
+                    <p class="opacity-90 font-light leading-relaxed">
+                      Positive statements to inspire confidence, calm the mind, and reinforce self-belief throughout your day.
                     </p>
+                  </div>                  
+                
+                <!-- 2) Soundscapes -->
+                <div class="glass-card tilt-card breathing p-8 rounded-3xl fade-in fade-in-delay-2">
+                <div class="w-16 h-16 rounded-full bg-sky-blue flex items-center justify-center mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                    </svg>
+                </div>
+                <h3 class="text-xl md:text-2xl font-light mb-4">Soundscapes</h3>
+                <p class="opacity-90 font-light leading-relaxed">
+                Carefully curated ambient sounds that create the perfect atmosphere for relaxation, focus, or deep meditation sessions.
+                </p>
                 </div>
                 
-                <div class="grid md:grid-cols-3 gap-8 mb-16">
-                    <div class="glass-card tilt-card breathing p-8 rounded-3xl fade-in fade-in-delay-1">
-                        <div class="w-16 h-16 rounded-full bg-lavender flex items-center justify-center mb-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-xl md:text-2xl font-light mb-4">Sleep Stories</h3>
-                        <p class="opacity-90 font-light leading-relaxed">
-                            Drift off to sleep with our collection of soothing narratives, whispered by calming voices that guide you into peaceful slumber.
-                        </p>
-                    </div>
-                    
-                    <div class="glass-card tilt-card breathing p-8 rounded-3xl fade-in fade-in-delay-2">
-                        <div class="w-16 h-16 rounded-full bg-sky-blue flex items-center justify-center mb-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                            </svg>
-                        </div>
-                        <h3 class="text-xl md:text-2xl font-light mb-4">Soundscapes</h3>
-                        <p class="opacity-90 font-light leading-relaxed">
-                            Customizable ambient sounds that create the perfect atmosphere for relaxation, focus, or deep meditation sessions.
-                        </p>
-                    </div>
-                    
-                    <div class="glass-card tilt-card breathing p-8 rounded-3xl fade-in fade-in-delay-3">
-                        <div class="w-16 h-16 rounded-full bg-peach flex items-center justify-center mb-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-xl md:text-2xl font-light mb-4">Breathing Tools</h3>
-                        <p class="opacity-90 font-light leading-relaxed">
-                            Visual guides that help regulate your breathing, syncing with your natural rhythm to reduce stress and anxiety.
-                        </p>
-                    </div>
+                <!-- 3) Breathing Tools -->
+                <div class="glass-card tilt-card breathing p-8 rounded-3xl fade-in fade-in-delay-3">
+                <div class="w-16 h-16 rounded-full bg-peach flex items-center justify-center mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
                 </div>
-                
-                <div class="text-center fade-in fade-in-delay-4">
-                    <button class="dream-button px-10 py-4 rounded-full text-lg">
-                        Explore All Features
-                    </button>
+                <h3 class="text-xl md:text-2xl font-light mb-4">Breathing Tools</h3>
+                <p class="opacity-90 font-light leading-relaxed">
+                    Visual guides that help regulate your breathing, syncing with your natural rhythm to reduce stress and anxiety.
+                </p>
                 </div>
             </div>
+            
+            <!-- Bottom row: extra cards -->
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <!-- 4) Sleep Stories (now here, static) -->
+                <div class="glass-card tilt-card p-8 rounded-3xl extra-card">
+                <div class="w-16 h-16 rounded-full bg-lavender flex items-center justify-center mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl md:text-2xl font-light mb-4">Sleep Stories</h3>
+                <p class="opacity-90 font-light leading-relaxed">
+                    Drift off to sleep with our collection of soothing narratives, whispered by calming voices that guide you into peaceful slumber.
+                </p>
+                </div>
+        
+                <!-- 5) Guided Meditations -->
+                <div class="glass-card tilt-card p-8 rounded-3xl extra-card">
+                <div class="w-16 h-16 rounded-full bg-sky-blue flex items-center justify-center mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl md:text-2xl font-light mb-4">Guided Meditations</h3>
+                <p class="opacity-90 font-light leading-relaxed">
+                    Step-by-step meditative journeys led by calming voices to deepen focus, relax the body, and center the spirit.
+                </p>
+                </div>
+                
+                <!-- 6) Calming Classical Music -->
+                <div class="glass-card tilt-card p-8 rounded-3xl extra-card">
+                <div class="w-16 h-16 rounded-full bg-peach flex items-center justify-center mb-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 19V6l12-3v13"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl md:text-2xl font-light mb-4">Calming Classical Music</h3>
+                <p class="opacity-90 font-light leading-relaxed">
+                    Beautiful selections of gentle symphonies and piano pieces crafted to soothe the mind and support tranquility.
+                </p>
+                </div>
+            </div>
+            
+            <div class="text-center fade-in fade-in-delay-4">
+                <button class="dream-button px-10 py-4 rounded-full text-lg">
+                Explore All Features
+                </button>
+            </div>
+            </div>
         </section>
-    </div>
+  
     
     <script>
         // Initialize Vanta.js 3D Background
@@ -580,30 +750,112 @@
             }
         });
     </script>
-    <!-- Place this just before the closing </body> tag -->
-<!-- Chat Widget Configuration -->
-<script>
-  window.ChatWidgetConfig = {
-    webhook: {
-      url: 'http://localhost:5678/webhook/0f929a91-cce9-42c9-beed-5ea6380a9269', // Replace with your actual n8n webhook URL
-      route: 'general'
-    },
-    branding: {
-      logo: 'https://yourdomain.com/logo.png', // Replace with your logo
-      name: 'Cloud Haven',
-      welcomeText: 'Hi ☁️ How can we help guide your journey?',
-      responseTimeText: 'We typically respond right away'
-    },
-    style: {
-      primaryColor: '#e6e6fa',      // Soft lavender
-      secondaryColor: '#ffdAB9',    // Peach tone
-      position: 'right',
-      backgroundColor: '#ffffff',
-      fontColor: '#333333'
-    }
-  };
-</script>
-<script src="https://cdn.jsdelivr.net/gh/WayneSimpson/n8n-chatbot-template@ba944c3/chat-widget.js"></script>
-<!-- End Chat Widget -->
+    <script>
+        // 1) grab it
+        const cursor = document.getElementById('cursor');
+        let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
+        
+        // 2) track real mouse
+        document.addEventListener('mousemove', e => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+        });
+        
+        // 3) smooth‑follow loop
+        (function update() {
+        cursorX += (mouseX - cursorX) * 0.1;
+        cursorY += (mouseY - cursorY) * 0.1;
+
+        // dynamically center based on current width/height
+        const halfW = cursor.offsetWidth  / 2;
+        const halfH = cursor.offsetHeight / 2;
+        cursor.style.left = (cursorX - halfW) + 'px';
+        cursor.style.top  = (cursorY - halfH) + 'px';
+
+        requestAnimationFrame(update);
+        })();
+
+        
+        // 4) expand on hover over any <a>, <button> or .glass-card
+        document.querySelectorAll('a, button, .glass-card').forEach(el => {
+          el.addEventListener('mouseenter', () => cursor.classList.add('expanded'));
+          el.addEventListener('mouseleave', () => cursor.classList.remove('expanded'));
+        });
+        
+        // 5) ripple on click
+        window.addEventListener('click', e => {
+            const r = document.createElement('div');
+          r.className = 'ripple';
+          r.style.left = e.clientX + 'px';
+          r.style.top  = e.clientY + 'px';
+          document.body.appendChild(r);
+          setTimeout(()=> r.remove(), 2000);
+        }, true);
+        </script>
+        <script>
+            // Grab the button and all extra cards
+            const features = document.getElementById('features');
+            const toggleBtn = features.querySelector('button.dream-button');
+            const extraCards = features.querySelectorAll('.extra-card');
+            
+            toggleBtn.addEventListener('click', () => {
+              extraCards.forEach(card => {
+                if (card.classList.contains('show')) {
+                  // hide
+                  card.classList.remove('show');
+                  card.addEventListener('transitionend', () => {
+                    card.style.display = 'none';
+                  }, { once: true });
+                } else {
+                  // show
+                  card.style.display = 'block';
+                  // slight delay so the browser registers display:block before animating
+                  setTimeout(() => card.classList.add('show'), 20);
+                }
+              });
+            
+              // toggle the button label
+              toggleBtn.textContent = toggleBtn.textContent.includes('Explore')
+                ? 'Show Less'
+                : 'Explore All Features';
+            });
+            </script>
+            <script>
+                const playBtn  = document.getElementById('affirmationPlay');
+                const audio    = document.getElementById('affirmationAudio');
+                const waveform = document.querySelector('.waveform');
+              
+                playBtn.addEventListener('click', () => {
+                  if (audio.paused) {
+                    // Start playback
+                    audio.play();
+                    waveform.classList.add('playing');  
+                    // Switch icon to ❚❚
+                    playBtn.querySelector('svg path').setAttribute(
+                      'd',
+                      'M4 4h4v12H4z M12 4h4v12h-4z'
+                    );
+                  } else {
+                    // Stop & rewind
+                    audio.pause();
+                    audio.currentTime = 0;
+                    waveform.classList.remove('playing');
+                    // Switch icon back to ▶
+                    playBtn.querySelector('svg path').setAttribute(
+                      'd',
+                      'M6 4l12 6-12 6V4z'
+                    );
+                  }
+                });
+              
+                // In case the user lets the track finish naturally
+                audio.addEventListener('ended', () => {
+                  waveform.classList.remove('playing');
+                  playBtn.querySelector('svg path').setAttribute(
+                    'd',
+                    'M6 4l12 6-12 6V4z'
+                  );
+                });
+              </script>                                                
 </body>
 </html>
