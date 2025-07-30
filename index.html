@@ -513,18 +513,39 @@
                     </p>
                   </div>                  
                 
-                <!-- 2) Soundscapes -->
+                <!-- 2) Soundscapes (with play + waveform) -->
                 <div class="glass-card tilt-card breathing p-8 rounded-3xl fade-in fade-in-delay-2">
-                <div class="w-16 h-16 rounded-full bg-sky-blue flex items-center justify-center mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                    </svg>
+                    <div class="flex items-center mb-6">
+                    <!-- Play button + audio -->
+                    <div class="relative flex items-center">
+                        <button
+                        id="soundscapesPlay"
+                        class="play-button flex items-center justify-center w-12 h-12 rounded-full bg-sky-blue"
+                        >
+                        <!-- ▶ play icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6 4l12 6-12 6V4z" />
+                        </svg>
+                        </button>
+                        <audio id="soundscapesAudio" src="Assets/Music/ambient_theta.mp3"></audio>
+                    </div>
+                    <!-- waveform: start paused, 8 bars -->
+                    <div
+                        id="soundscapesWaveform"
+                        class="waveform flex space-x-1 ml-4"
+                    >
+                        <span class="wave"></span><span class="wave"></span>
+                        <span class="wave"></span><span class="wave"></span>
+                        <span class="wave"></span><span class="wave"></span>
+                        <span class="wave"></span><span class="wave"></span>
+                    </div>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-light mb-4">Soundscapes</h3>
+                    <p class="opacity-90 font-light leading-relaxed">
+                    Carefully curated ambient sounds to create the perfect atmosphere for relaxation, focus, or deep meditation sessions.
+                    </p>
                 </div>
-                <h3 class="text-xl md:text-2xl font-light mb-4">Soundscapes</h3>
-                <p class="opacity-90 font-light leading-relaxed">
-                Carefully curated ambient sounds that create the perfect atmosphere for relaxation, focus, or deep meditation sessions.
-                </p>
-                </div>
+  
                 
                 <!-- 3) Breathing Tools -->
                 <div class="glass-card tilt-card breathing p-8 rounded-3xl fade-in fade-in-delay-3">
@@ -856,6 +877,40 @@
                     'M6 4l12 6-12 6V4z'
                   );
                 });
-              </script>                                                
+              </script>
+              <script>
+                const soundBtn      = document.getElementById('soundscapesPlay');
+                const soundAudio    = document.getElementById('soundscapesAudio');
+                const soundWaveform = document.getElementById('soundscapesWaveform');
+              
+                soundBtn.addEventListener('click', () => {
+                  if (soundAudio.paused) {
+                    soundAudio.play();
+                    soundWaveform.classList.add('playing');
+                    // switch to ❚❚
+                    soundBtn.querySelector('svg path').setAttribute(
+                      'd',
+                      'M4 4h4v12H4z M12 4h4v12h-4z'
+                    );
+                  } else {
+                    soundAudio.pause();
+                    soundAudio.currentTime = 0;
+                    soundWaveform.classList.remove('playing');
+                    // back to ▶
+                    soundBtn.querySelector('svg path').setAttribute(
+                      'd',
+                      'M6 4l12 6-12 6V4z'
+                    );
+                  }
+                });
+              
+                soundAudio.addEventListener('ended', () => {
+                  soundWaveform.classList.remove('playing');
+                  soundBtn.querySelector('svg path').setAttribute(
+                    'd',
+                    'M6 4l12 6-12 6V4z'
+                  );
+                });
+              </script>                                                              
 </body>
 </html>
