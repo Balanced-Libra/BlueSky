@@ -361,6 +361,20 @@
         0%, 100% { transform: scaleY(0.5); }
         50%     { transform: scaleY(1.5); }
         }
+        
+        .coming-soon-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        pointer-events: none;
+        }
 
     </style>
 </head>
@@ -421,197 +435,221 @@
         <!-- About Section -->
         <section id="about" class="section relative">
             <div class="container mx-auto px-6 relative z-10">
-                <div class="flex flex-col lg:flex-row items-center gap-12">
-                    <div class="lg:w-1/2 fade-in">
-                        <h2 class="title-font text-4xl md:text-6xl font-light mb-8 text-sky-blue">
-                            Our Philosophy
-                        </h2>
-                        <p class="text-lg md:text-xl font-light mb-6 opacity-90 leading-relaxed">
-                            In a world that never stops moving, we create spaces for stillness. Our approach blends ancient wisdom with modern design to craft experiences that gently guide you back to yourself.
-                        </p>
-                        <p class="text-lg md:text-xl font-light opacity-90 leading-relaxed">
-                            Like clouds that form and dissolve without effort, we believe true peace comes when we stop trying so hard to find it.
-                        </p>
-                    </div>
-                    <div class="lg:w-1/2 fade-in fade-in-delay-1">
-                        <div class="glass-card tilt-card breathing p-8 rounded-3xl">
-                            <div class="aspect-w-3 aspect-h-2 rounded-2xl overflow-hidden mb-6">
-                                <video
-                                  src="assets/Videos/Intro.mp4"
-                                  class="w-full h-full object-cover"
-                                  autoplay
-                                  loop
-                                  muted
-                                  playsinline
-                                >
-                                  Your browser doesn’t support HTML5 video.
-                                </video>
-                              </div>                              
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-14 h-14 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="font-light text-xl mb-1">Guided Meditations</h3>
-                                    <p class="text-sm opacity-80">Softly whispered journeys</p>
-                                </div>
-                            </div>
-                        </div>
+            <div class="flex flex-col lg:flex-row items-center gap-12">
+                
+                <!-- Text column -->
+                <div class="lg:w-1/2 fade-in">
+                <h2 class="title-font text-4xl md:text-6xl font-light mb-8 text-sky-blue">
+                    Our Philosophy
+                </h2>
+                <p class="text-lg md:text-xl font-light mb-6 opacity-90 leading-relaxed">
+                    In a world that never stops moving, we create spaces for stillness. Our approach blends ancient wisdom with modern design to craft experiences that gently guide you back to yourself.
+                </p>
+                <p class="text-lg md:text-xl font-light opacity-90 leading-relaxed">
+                    Like clouds that form and dissolve without effort, we believe true peace comes when we stop trying so hard to find it.
+                </p>
+                </div>
+                
+                <!-- Video card column -->
+                <div class="lg:w-1/2 fade-in fade-in-delay-1">
+                <div class="glass-card tilt-card breathing p-8 rounded-3xl">
+                    <div class="aspect-w-3 aspect-h-2 rounded-2xl overflow-hidden mb-6">
+                    <video
+                        src="assets/Videos/Intro.mp4"
+                        class="w-full h-full object-cover"
+                        autoplay
+                        loop
+                        muted
+                        playsinline
+                    >
+                        Your browser doesn’t support HTML5 video.
+                    </video>
                     </div>
                 </div>
+                </div>
+                
+            </div>
             </div>
         </section>
+  
         
         <!-- Features Section -->
-        <section id="features" class="section relative">
-            <div class="container mx-auto px-6 relative z-10">
-            <div class="text-center mb-16 fade-in">
-                <h2 class="title-font text-4xl md:text-6xl font-light mb-6 text-peach">
-                Gentle Features
-                </h2>
-                <p class="max-w-3xl mx-auto text-lg md:text-xl font-light opacity-90">
-                Designed with care to support your journey inward
-                </p>
-            </div>
-            
-            <!-- Top row: all 3 now tilt on hover -->
-            <div class="grid md:grid-cols-3 gap-8 mb-16">
-                <!-- 1) Affirmations (moved into Sleep Stories slot) -->
-                <div class="glass-card tilt-card p-8 rounded-3xl fade-in fade-in-delay-1">
-                    <div class="flex items-center mb-6">
-                      <!-- Play button + waveform wrapper -->
-                      <div class="relative flex items-center">
-                        <button id="affirmationPlay" class="play-button flex items-center justify-center w-12 h-12 rounded-full bg-lavender">
-                          <!-- ▶ play icon -->
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M6 4l12 6-12 6V4z" />
-                          </svg>
-                        </button>
-                        <!-- hidden audio element -->
-                        <audio id="affirmationAudio" src="assets/Audios/I am rooted.m4a"></audio>
-                      </div>
-                      <!-- waveform -->
-                      <!-- waveform: start paused, 8 bars for a longer look -->
-                    <div class="waveform flex space-x-1 ml-4">
-                        <span class="wave"></span>
-                        <span class="wave"></span>
-                        <span class="wave"></span>
-                        <span class="wave"></span>
-                        <span class="wave"></span>
-                        <span class="wave"></span>
-                        <span class="wave"></span>
-                        <span class="wave"></span>
-                    </div>
+<section id="features" class="section relative">
+    <div class="container mx-auto px-6 relative z-10">
+      <!-- Header -->
+      <div class="text-center mb-16 fade-in">
+        <h2 class="title-font text-4xl md:text-6xl font-light mb-6 text-peach">
+          Gentle Features
+        </h2>
+        <p class="max-w-3xl mx-auto text-lg md:text-xl font-light opacity-90">
+          Designed with care to support your journey inward
+        </p>
+      </div>
   
-                    </div>
-                    <h3 class="text-xl md:text-2xl font-light mb-4">Affirmations</h3>
-                    <p class="opacity-90 font-light leading-relaxed">
-                      Positive statements to inspire confidence, calm the mind, and reinforce self-belief throughout your day.
-                    </p>
-                  </div>                  
-                
-                <!-- 2) Soundscapes (with play + waveform) -->
-                <div class="glass-card tilt-card breathing p-8 rounded-3xl fade-in fade-in-delay-2">
-                    <div class="flex items-center mb-6">
-                    <!-- Play button + audio -->
-                    <div class="relative flex items-center">
-                        <button
-                        id="soundscapesPlay"
-                        class="play-button flex items-center justify-center w-12 h-12 rounded-full bg-sky-blue"
-                        >
-                        <!-- ▶ play icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M6 4l12 6-12 6V4z" />
-                        </svg>
-                        </button>
-                        <audio id="soundscapesAudio" src="assets/Music/ambient_theta.mp3"></audio>
-                    </div>
-                    <!-- waveform: start paused, 8 bars -->
-                    <div
-                        id="soundscapesWaveform"
-                        class="waveform flex space-x-1 ml-4"
-                    >
-                        <span class="wave"></span><span class="wave"></span>
-                        <span class="wave"></span><span class="wave"></span>
-                        <span class="wave"></span><span class="wave"></span>
-                        <span class="wave"></span><span class="wave"></span>
-                    </div>
-                    </div>
-                    <h3 class="text-xl md:text-2xl font-light mb-4">Soundscapes</h3>
-                    <p class="opacity-90 font-light leading-relaxed">
-                    Carefully curated ambient sounds to create the perfect atmosphere for relaxation, focus, or deep meditation sessions.
-                    </p>
-                </div>
+      <!-- Top row (3 cards) -->
+      <div class="grid md:grid-cols-3 gap-8 mb-16">
+        <!-- 1) Affirmations -->
+        <div class="glass-card tilt-card p-8 rounded-3xl fade-in fade-in-delay-1">
+          <div class="flex items-center mb-6">
+            <div class="relative flex items-center">
+              <button id="affirmationPlay"
+                      class="play-button flex items-center justify-center w-12 h-12 rounded-full bg-lavender">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-6 w-6 text-white"
+                     fill="currentColor"
+                     viewBox="0 0 20 20">
+                  <path d="M6 4l12 6-12 6V4z"/>
+                </svg>
+              </button>
+              <audio id="affirmationAudio" src="assets/Audios/ImRooted.m4a"></audio>
+            </div>
+            <div class="waveform flex space-x-1 ml-4">
+              <span class="wave"></span><span class="wave"></span>
+              <span class="wave"></span><span class="wave"></span>
+              <span class="wave"></span><span class="wave"></span>
+              <span class="wave"></span><span class="wave"></span>
+            </div>
+          </div>
+          <h3 class="text-xl md:text-2xl font-light mb-4">Affirmations</h3>
+          <p class="opacity-90 font-light leading-relaxed">
+            Positive statements to inspire confidence, calm the mind, and reinforce self-belief throughout your day.
+          </p>
+        </div>
   
-                
-                <!-- 3) Breathing Tools -->
-                <div class="glass-card tilt-card breathing p-8 rounded-3xl fade-in fade-in-delay-3">
-                <div class="w-16 h-16 rounded-full bg-peach flex items-center justify-center mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                </div>
-                <h3 class="text-xl md:text-2xl font-light mb-4">Breathing Tools</h3>
-                <p class="opacity-90 font-light leading-relaxed">
-                    Visual guides that help regulate your breathing, syncing with your natural rhythm to reduce stress and anxiety.
-                </p>
-                </div>
+        <!-- 2) Soundscapes -->
+        <div class="glass-card tilt-card breathing p-8 rounded-3xl fade-in fade-in-delay-2">
+          <div class="flex items-center mb-6">
+            <div class="relative flex items-center">
+              <button id="soundscapesPlay"
+                      class="play-button flex items-center justify-center w-12 h-12 rounded-full bg-sky-blue">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-6 w-6 text-white"
+                     fill="currentColor"
+                     viewBox="0 0 20 20">
+                  <path d="M6 4l12 6-12 6V4z"/>
+                </svg>
+              </button>
+              <audio id="soundscapesAudio" src="assets/Music/ambient_theta.mp3"></audio>
             </div>
-            
-            <!-- Bottom row: extra cards -->
-            <div class="grid md:grid-cols-3 gap-8 mb-16">
-                <!-- 4) Sleep Stories (now here, static) -->
-                <div class="glass-card tilt-card p-8 rounded-3xl extra-card">
-                <div class="w-16 h-16 rounded-full bg-lavender flex items-center justify-center mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                </div>
-                <h3 class="text-xl md:text-2xl font-light mb-4">Sleep Stories</h3>
-                <p class="opacity-90 font-light leading-relaxed">
-                    Drift off to sleep with our collection of soothing narratives, whispered by calming voices that guide you into peaceful slumber.
-                </p>
-                </div>
-        
-                <!-- 5) Guided Meditations -->
-                <div class="glass-card tilt-card p-8 rounded-3xl extra-card">
-                <div class="w-16 h-16 rounded-full bg-sky-blue flex items-center justify-center mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <h3 class="text-xl md:text-2xl font-light mb-4">Guided Meditations</h3>
-                <p class="opacity-90 font-light leading-relaxed">
-                    Step-by-step meditative journeys led by calming voices to deepen focus, relax the body, and center the spirit.
-                </p>
-                </div>
-                
-                <!-- 6) Calming Classical Music -->
-                <div class="glass-card tilt-card p-8 rounded-3xl extra-card">
-                <div class="w-16 h-16 rounded-full bg-peach flex items-center justify-center mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 19V6l12-3v13"/>
-                    </svg>
-                </div>
-                <h3 class="text-xl md:text-2xl font-light mb-4">Calming Classical Music</h3>
-                <p class="opacity-90 font-light leading-relaxed">
-                    Beautiful selections of gentle symphonies and piano pieces crafted to soothe the mind and support tranquility.
-                </p>
-                </div>
+            <div id="soundscapesWaveform" class="waveform flex space-x-1 ml-4">
+              <span class="wave"></span><span class="wave"></span>
+              <span class="wave"></span><span class="wave"></span>
+              <span class="wave"></span><span class="wave"></span>
+              <span class="wave"></span><span class="wave"></span>
             </div>
-            
-            <div class="text-center fade-in fade-in-delay-4">
-                <button class="dream-button px-10 py-4 rounded-full text-lg">
-                Explore All Features
-                </button>
-            </div>
-            </div>
-        </section>
+          </div>
+          <h3 class="text-xl md:text-2xl font-light mb-4">Soundscapes</h3>
+          <p class="opacity-90 font-light leading-relaxed">
+            Carefully curated ambient sounds to create the perfect atmosphere for relaxation, focus, or deep meditation sessions.
+          </p>
+        </div>
   
+        <!-- 3) Guided Meditations -->
+        <div class="glass-card tilt-card p-8 rounded-3xl fade-in fade-in-delay-3">
+          <div class="flex items-center mb-6">
+            <div class="relative flex items-center">
+              <button id="guidedPlay"
+                      class="play-button flex items-center justify-center w-12 h-12 rounded-full bg-sky-blue">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-6 w-6 text-white"
+                     fill="currentColor"
+                     viewBox="0 0 20 20">
+                  <path d="M6 4l12 6-12 6V4z"/>
+                </svg>
+              </button>
+              <audio id="guidedAudio" src="assets/Audios/TheBeach.mp3"></audio>
+            </div>
+            <div id="guidedWaveform" class="waveform flex space-x-1 ml-4">
+              <span class="wave"></span><span class="wave"></span>
+              <span class="wave"></span><span class="wave"></span>
+              <span class="wave"></span><span class="wave"></span>
+              <span class="wave"></span><span class="wave"></span>
+            </div>
+          </div>
+          <h3 class="text-xl md:text-2xl font-light mb-4">Guided Meditations</h3>
+          <p class="opacity-90 font-light leading-relaxed">
+            Step-by-step meditative journeys led by calming voices to deepen focus, relax the body, and center the spirit.
+          </p>
+        </div>
+      </div>
+  
+      <!-- Bottom row (3 cards) -->
+    <div class="grid md:grid-cols-3 gap-8 mb-16">
+    
+        <!-- 4) Sleep Stories -->
+        <div class="glass-card tilt-card p-8 rounded-3xl extra-card" style="position: relative;">
+        <div class="coming-soon-badge">Coming Soon</div>
+        <div class="w-16 h-16 rounded-full bg-lavender flex items-center justify-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+            <path stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1"
+                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+            </svg>
+        </div>
+        <h3 class="text-xl md:text-2xl font-light mb-4">Sleep Stories</h3>
+        <p class="opacity-90 font-light leading-relaxed">
+            Drift off to sleep with our collection of soothing narratives, whispered by calming voices that guide you into peaceful slumber.
+        </p>
+        </div>
+    
+        <!-- 5) Breathing Tools -->
+        <div class="glass-card tilt-card p-8 rounded-3xl extra-card" style="position: relative;">
+        <div class="coming-soon-badge">Coming Soon</div>
+        <div class="w-16 h-16 rounded-full bg-peach flex items-center justify-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+            <path stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1"
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+        </div>
+        <h3 class="text-xl md:text-2xl font-light mb-4">Breathing Tools</h3>
+        <p class="opacity-90 font-light leading-relaxed">
+            Visual guides that help regulate your breathing, syncing with your natural rhythm to reduce stress and anxiety.
+        </p>
+        </div>
+    
+        <!-- 6) Calming Classical Music -->
+        <div class="glass-card tilt-card p-8 rounded-3xl extra-card" style="position: relative;">
+        <div class="coming-soon-badge">Coming Soon</div>
+        <div class="w-16 h-16 rounded-full bg-peach flex items-center justify-center mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+            <path stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1"
+                    d="M9 19V6l12-3v13"/>
+            </svg>
+        </div>
+        <h3 class="text-xl md:text-2xl font-light mb-4">Calming Classical Music</h3>
+        <p class="opacity-90 font-light leading-relaxed">
+            Beautiful selections of gentle symphonies and piano pieces crafted to soothe the mind and support tranquility.
+        </p>
+        </div>
+    
+    </div>
+  
+  
+      <!-- Toggle button -->
+      <div class="text-center fade-in fade-in-delay-4">
+        <button class="dream-button px-10 py-4 rounded-full text-lg">
+          Explore All Features
+        </button>
+      </div>
+    </div>
+  </section>
     
     <script>
         // Initialize Vanta.js 3D Background
@@ -911,6 +949,41 @@
                     'M6 4l12 6-12 6V4z'
                   );
                 });
-              </script>                                                              
+              </script>    
+              <script>
+                const guidedBtn      = document.getElementById('guidedPlay');
+                const guidedAudio    = document.getElementById('guidedAudio');
+                const guidedWaveform = document.getElementById('guidedWaveform');
+              
+                guidedBtn.addEventListener('click', () => {
+                  if (guidedAudio.paused) {
+                    guidedAudio.play();
+                    guidedWaveform.classList.add('playing');
+                    // switch icon to ❚❚
+                    guidedBtn.querySelector('svg path').setAttribute(
+                      'd',
+                      'M4 4h4v12H4z M12 4h4v12h-4z'
+                    );
+                  } else {
+                    guidedAudio.pause();
+                    guidedAudio.currentTime = 0;
+                    guidedWaveform.classList.remove('playing');
+                    // back to ▶
+                    guidedBtn.querySelector('svg path').setAttribute(
+                      'd',
+                      'M6 4l12 6-12 6V4z'
+                    );
+                  }
+                });
+              
+                guidedAudio.addEventListener('ended', () => {
+                  guidedWaveform.classList.remove('playing');
+                  guidedBtn.querySelector('svg path').setAttribute(
+                    'd',
+                    'M6 4l12 6-12 6V4z'
+                  );
+                });
+              </script>
+                                                                        
 </body>
 </html>
