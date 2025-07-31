@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Haven - Immersive Experience</title>
+    <title>Passing Clouds - The relaxation application</title>
     
     <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
@@ -356,7 +356,22 @@
         .waveform .wave:nth-child(6) { animation-delay: 1.0s; }
         .waveform .wave:nth-child(7) { animation-delay: 1.2s; }
         .waveform .wave:nth-child(8) { animation-delay: 1.4s; }
-
+        .waveform .wave:nth-child(9)  { animation-delay: 1.6s; }
+        .waveform .wave:nth-child(10) { animation-delay: 1.8s; }
+        .waveform .wave:nth-child(11) { animation-delay: 2.0s; }
+        .waveform .wave:nth-child(12) { animation-delay: 2.2s; }
+        .waveform .wave:nth-child(13) { animation-delay: 2.4s; }
+        .waveform .wave:nth-child(14) { animation-delay: 2.6s; }
+        .waveform .wave:nth-child(15) { animation-delay: 2.8s; }
+        .waveform .wave:nth-child(16) { animation-delay: 3.0s; }
+        .waveform .wave:nth-child(17) { animation-delay: 3.2s; }
+        .waveform .wave:nth-child(18) { animation-delay: 3.4s; }
+        .waveform .wave:nth-child(19) { animation-delay: 3.6s; }
+        .waveform .wave:nth-child(20) { animation-delay: 3.8s; }
+        .waveform .wave:nth-child(21) { animation-delay: 4.0s; }
+        .waveform .wave:nth-child(22) { animation-delay: 4.2s; }
+        .waveform .wave:nth-child(23) { animation-delay: 4.4s; }
+        .waveform .wave:nth-child(24) { animation-delay: 4.6s; }
         @keyframes wave {
         0%, 100% { transform: scaleY(0.5); }
         50%     { transform: scaleY(1.5); }
@@ -501,14 +516,20 @@
                   <path d="M6 4l12 6-12 6V4z"/>
                 </svg>
               </button>
-              <audio id="affirmationAudio" src="assets/Audios/Affirmations/ImRooted.mov"></audio>
+              <audio id="affirmationAudio"
+                data-src="assets/Audios/Affirmations/ImRooted.mov"
+                preload="none"></audio>
             </div>
-            <div id="affirmationWaveform" class="waveform flex space-x-1 ml-4">
+            <div id="affirmationWaveform" class="waveform flex items-center space-x-1 ml-4">
                 <span class="wave"></span><span class="wave"></span>
                 <span class="wave"></span><span class="wave"></span>
                 <span class="wave"></span><span class="wave"></span>
                 <span class="wave"></span><span class="wave"></span>
-              </div>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+              </div>                          
           </div>
           <h3 class="text-xl md:text-2xl font-light mb-4">Affirmations</h3>
           <p class="opacity-90 font-light leading-relaxed">
@@ -529,14 +550,21 @@
                   <path d="M6 4l12 6-12 6V4z"/>
                 </svg>
               </button>
-              <audio id="soundscapesAudio" src="assets/Music/ambient_theta.mp3"></audio>
+              <audio id="soundscapesAudio"
+                data-src="assets/Music/ambient_theta.mp3"
+                preload="none"></audio>
             </div>
-            <div id="soundscapesWaveform" class="waveform flex space-x-1 ml-4">
-              <span class="wave"></span><span class="wave"></span>
-              <span class="wave"></span><span class="wave"></span>
-              <span class="wave"></span><span class="wave"></span>
-              <span class="wave"></span><span class="wave"></span>
-            </div>
+            <div id="soundscapesWaveform" class="waveform flex items-center space-x-1 ml-4">
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+              </div>              
+              
           </div>
           <h3 class="text-xl md:text-2xl font-light mb-4">Soundscapes</h3>
           <p class="opacity-90 font-light leading-relaxed">
@@ -557,14 +585,20 @@
                   <path d="M6 4l12 6-12 6V4z"/>
                 </svg>
               </button>
-              <audio id="guidedAudio" src="assets/Audios/Meditations/TheBeach.mp3"></audio>
+              <audio id="guidedAudio"
+                data-src="assets/Audios/Meditations/TheBeach.mp3"
+                preload="none"></audio>
             </div>
-            <div id="guidedWaveform" class="waveform flex space-x-1 ml-4">
-              <span class="wave"></span><span class="wave"></span>
-              <span class="wave"></span><span class="wave"></span>
-              <span class="wave"></span><span class="wave"></span>
-              <span class="wave"></span><span class="wave"></span>
-            </div>
+            <div id="guidedWaveform" class="waveform flex items-center space-x-1 ml-4">
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+              </div>                           
           </div>
           <h3 class="text-xl md:text-2xl font-light mb-4">Guided Meditations</h3>
           <p class="opacity-90 font-light leading-relaxed">
@@ -888,7 +922,8 @@
           
               b.addEventListener('click', () => {
                 if (a.paused) {
-                  a.play();
+                    if (!a.src) a.src = a.dataset.src;
+                    a.play();
                   w.classList.add('playing');
                   b.querySelector('svg path').setAttribute('d','M4 4h4v12H4z M12 4h4v12h-4z');
                 } else {
