@@ -501,14 +501,14 @@
                   <path d="M6 4l12 6-12 6V4z"/>
                 </svg>
               </button>
-              <audio id="affirmationAudio" src="assets/Audios/ImRooted.m4a"></audio>
+              <audio id="affirmationAudio" src="assets/Audios/ImRooted.mov"></audio>
             </div>
-            <div class="waveform flex space-x-1 ml-4">
-              <span class="wave"></span><span class="wave"></span>
-              <span class="wave"></span><span class="wave"></span>
-              <span class="wave"></span><span class="wave"></span>
-              <span class="wave"></span><span class="wave"></span>
-            </div>
+            <div id="affirmationWaveform" class="waveform flex space-x-1 ml-4">
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+                <span class="wave"></span><span class="wave"></span>
+              </div>
           </div>
           <h3 class="text-xl md:text-2xl font-light mb-4">Affirmations</h3>
           <p class="opacity-90 font-light leading-relaxed">
@@ -852,138 +852,59 @@
         }, true);
         </script>
         <script>
-            // Grab the button and all extra cards
-            const features = document.getElementById('features');
-            const toggleBtn = features.querySelector('button.dream-button');
-            const extraCards = features.querySelectorAll('.extra-card');
-            
+            // Show/hide extra feature cards
+            const features    = document.getElementById('features');
+            const toggleBtn   = features.querySelector('button.dream-button');
+            const extraCards  = features.querySelectorAll('.extra-card');
+          
             toggleBtn.addEventListener('click', () => {
               extraCards.forEach(card => {
                 if (card.classList.contains('show')) {
-                  // hide
                   card.classList.remove('show');
-                  card.addEventListener('transitionend', () => {
-                    card.style.display = 'none';
-                  }, { once: true });
+                  card.addEventListener('transitionend', () => card.style.display = 'none', { once: true });
                 } else {
-                  // show
                   card.style.display = 'block';
-                  // slight delay so the browser registers display:block before animating
                   setTimeout(() => card.classList.add('show'), 20);
                 }
               });
-            
-              // toggle the button label
               toggleBtn.textContent = toggleBtn.textContent.includes('Explore')
                 ? 'Show Less'
                 : 'Explore All Features';
             });
-            </script>
-            <script>
-                const playBtn  = document.getElementById('affirmationPlay');
-                const audio    = document.getElementById('affirmationAudio');
-                const waveform = document.querySelector('.waveform');
-              
-                playBtn.addEventListener('click', () => {
-                  if (audio.paused) {
-                    // Start playback
-                    audio.play();
-                    waveform.classList.add('playing');  
-                    // Switch icon to ❚❚
-                    playBtn.querySelector('svg path').setAttribute(
-                      'd',
-                      'M4 4h4v12H4z M12 4h4v12h-4z'
-                    );
-                  } else {
-                    // Stop & rewind
-                    audio.pause();
-                    audio.currentTime = 0;
-                    waveform.classList.remove('playing');
-                    // Switch icon back to ▶
-                    playBtn.querySelector('svg path').setAttribute(
-                      'd',
-                      'M6 4l12 6-12 6V4z'
-                    );
-                  }
-                });
-              
-                // In case the user lets the track finish naturally
-                audio.addEventListener('ended', () => {
-                  waveform.classList.remove('playing');
-                  playBtn.querySelector('svg path').setAttribute(
-                    'd',
-                    'M6 4l12 6-12 6V4z'
-                  );
-                });
-              </script>
-              <script>
-                const soundBtn      = document.getElementById('soundscapesPlay');
-                const soundAudio    = document.getElementById('soundscapesAudio');
-                const soundWaveform = document.getElementById('soundscapesWaveform');
-              
-                soundBtn.addEventListener('click', () => {
-                  if (soundAudio.paused) {
-                    soundAudio.play();
-                    soundWaveform.classList.add('playing');
-                    // switch to ❚❚
-                    soundBtn.querySelector('svg path').setAttribute(
-                      'd',
-                      'M4 4h4v12H4z M12 4h4v12h-4z'
-                    );
-                  } else {
-                    soundAudio.pause();
-                    soundAudio.currentTime = 0;
-                    soundWaveform.classList.remove('playing');
-                    // back to ▶
-                    soundBtn.querySelector('svg path').setAttribute(
-                      'd',
-                      'M6 4l12 6-12 6V4z'
-                    );
-                  }
-                });
-              
-                soundAudio.addEventListener('ended', () => {
-                  soundWaveform.classList.remove('playing');
-                  soundBtn.querySelector('svg path').setAttribute(
-                    'd',
-                    'M6 4l12 6-12 6V4z'
-                  );
-                });
-              </script>    
-              <script>
-                const guidedBtn      = document.getElementById('guidedPlay');
-                const guidedAudio    = document.getElementById('guidedAudio');
-                const guidedWaveform = document.getElementById('guidedWaveform');
-              
-                guidedBtn.addEventListener('click', () => {
-                  if (guidedAudio.paused) {
-                    guidedAudio.play();
-                    guidedWaveform.classList.add('playing');
-                    // switch icon to ❚❚
-                    guidedBtn.querySelector('svg path').setAttribute(
-                      'd',
-                      'M4 4h4v12H4z M12 4h4v12h-4z'
-                    );
-                  } else {
-                    guidedAudio.pause();
-                    guidedAudio.currentTime = 0;
-                    guidedWaveform.classList.remove('playing');
-                    // back to ▶
-                    guidedBtn.querySelector('svg path').setAttribute(
-                      'd',
-                      'M6 4l12 6-12 6V4z'
-                    );
-                  }
-                });
-              
-                guidedAudio.addEventListener('ended', () => {
-                  guidedWaveform.classList.remove('playing');
-                  guidedBtn.querySelector('svg path').setAttribute(
-                    'd',
-                    'M6 4l12 6-12 6V4z'
-                  );
-                });
-              </script>
-                                                                        
+          </script>
+          
+          <script>
+            // DRY audio + waveform logic for all three cards
+            const setups = [
+              { btn: 'affirmationPlay', audio: 'affirmationAudio', wave: 'affirmationWaveform' },
+              { btn: 'soundscapesPlay', audio: 'soundscapesAudio', wave: 'soundscapesWaveform' },
+              { btn: 'guidedPlay',       audio: 'guidedAudio',       wave: 'guidedWaveform' }
+            ];
+          
+            setups.forEach(({ btn, audio, wave }) => {
+              const b = document.getElementById(btn);
+              const a = document.getElementById(audio);
+              const w = document.getElementById(wave);
+          
+              b.addEventListener('click', () => {
+                if (a.paused) {
+                  a.play();
+                  w.classList.add('playing');
+                  b.querySelector('svg path').setAttribute('d','M4 4h4v12H4z M12 4h4v12h-4z');
+                } else {
+                  a.pause();
+                  a.currentTime = 0;
+                  w.classList.remove('playing');
+                  b.querySelector('svg path').setAttribute('d','M6 4l12 6-12 6V4z');
+                }
+              });
+          
+              a.addEventListener('ended', () => {
+                w.classList.remove('playing');
+                b.querySelector('svg path').setAttribute('d','M6 4l12 6-12 6V4z');
+              });
+            });
+          </script>
+                                                                         
 </body>
 </html>
