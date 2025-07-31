@@ -125,6 +125,7 @@
             opacity: 1;
         }
         }
+
         
         /* Navigation Dots */
         .nav-dot {
@@ -391,6 +392,49 @@
         pointer-events: none;
         }
 
+        /* Login morphing form — float in slowly, hide button */
+        #loginForm {
+        width: 280px;
+        transform-origin: top right;
+        transform: translateY(-20px) scale(0.8);
+        opacity: 0;
+        transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+        }
+        #loginContainer.open #loginForm {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        }
+
+        /* Hide the login button itself while form is open */
+        #loginBtn {
+        transition: opacity 0.3s ease;
+        }
+        #loginContainer.open #loginBtn {
+        opacity: 0;
+        pointer-events: none;
+        }
+        /* by default the form is hidden & non-interactive */
+        #loginForm {
+        pointer-events: none;
+        }
+
+        /* when “open”, make it interactive again */
+        #loginContainer.open #loginForm {
+        pointer-events: auto;
+        }
+        /* make the form clickable when the container has .open */
+        #loginContainer.open #loginForm {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        pointer-events: auto;
+        }
+
+        /* hide the button itself while the form is open */
+        #loginContainer.open #loginBtn {
+        opacity: 0;
+        pointer-events: none;
+        }
+
     </style>
 </head>
 <body class="text-white">
@@ -410,6 +454,49 @@
     
     <!-- Content Container -->
     <div class="content">
+
+        <!-- Content Container -->
+        <div class="content">
+            <!-- Login Container -->
+            <div id="loginContainer" class="fixed top-6 right-6 z-50">
+                <!-- the button that morphs away -->
+                <button
+                  id="loginBtn"
+                  class="dream-button px-6 py-2 rounded-full text-lg transition-opacity duration-300 ease"
+                >
+                  Login
+                </button>
+              
+                <!-- the form, absolutely positioned on top-right of the button -->
+                <div
+                  id="loginForm"
+                  class="login-form glass-card p-6 rounded-3xl"
+                  style="position:absolute; top:0; right:0; width:280px;"
+                >
+                  <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="Email"
+                    class="w-full mb-4 px-3 py-2 rounded bg-white bg-opacity-20 border border-white border-opacity-40 focus:outline-none"
+                  />
+                  <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Password"
+                    class="w-full mb-4 px-3 py-2 rounded bg-white bg-opacity-20 border border-white border-opacity-40 focus:outline-none"
+                  />
+                  <div class="flex justify-end space-x-2">
+                    <button id="cancelLogin" class="dream-button px-4 py-2 rounded-full text-sm">
+                      Cancel
+                    </button>
+                    <button id="confirmLogin" class="dream-button px-4 py-2 rounded-full text-sm">
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+  
+  
         <!-- Navigation Dots -->
         <div class="fixed right-6 top-1/2 transform -translate-y-1/2 z-50 hidden md:block">
             <div class="flex flex-col space-y-4">
@@ -437,13 +524,18 @@
                 <p class="text-xl md:text-2xl font-light max-w-3xl mx-auto mb-12 opacity-90 fade-in fade-in-delay-1">
                     Drift effortlessly into tranquility with our curated collection of calming experiences designed to soothe your soul and elevate your spirit.
                 </p>
-                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 fade-in fade-in-delay-2">
+                <div class="flex flex-col items-center space-y-4 fade-in fade-in-delay-2">
                     <a href="#about">
-                        <button class="dream-button px-10 py-4 rounded-full text-lg">
-                            Begin Journey
-                        </button>
-                    </a>                    
-                </div>
+                      <button class="dream-button px-10 py-4 rounded-full text-lg">
+                        Begin Journey
+                      </button>
+                    </a>
+                    <a href="#about">
+                      <button class="dream-button px-10 py-4 rounded-full text-lg">
+                        Explore
+                      </button>
+                    </a>
+                  </div>                  
             </div>
         </section>
         
@@ -897,6 +989,21 @@
               });
             });
           </script>
+          <script>
+            const loginBtn       = document.getElementById('loginBtn');
+            const loginContainer = document.getElementById('loginContainer');
+            const cancelLogin    = document.getElementById('cancelLogin');
+          
+            // Toggle form open/close
+            loginBtn.addEventListener('click', () => {
+              loginContainer.classList.toggle('open');
+            });
+          
+            // Close form
+            cancelLogin.addEventListener('click', () => {
+              loginContainer.classList.remove('open');
+            });
+          </script>          
                                                                          
 </body>
 </html>
