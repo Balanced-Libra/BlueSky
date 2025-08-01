@@ -315,20 +315,6 @@
             transform: translate(-50%,-50%) scale(1);
         }
         }
-        /* hidden-by-default extra cards */
-        .extra-card {
-        display: none;              /* keep them out of layout */
-        opacity: 0;
-        transform: translateY(30px);
-        transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        /* when we toggle “show”, slide up + fade in */
-        .extra-card.show {
-        display: block;             /* bring back into layout */
-        opacity: 1;
-        transform: translateY(0);
-        }
         /* Play-button styling */
         .play-button {
         border: none;
@@ -434,6 +420,125 @@
         opacity: 0;
         pointer-events: none;
         }
+        /* ─── Sign-Up morphing form ─── */
+        #signupContainer {
+        position: relative;
+        }
+        #signupForm {
+        position: absolute;
+        top: 0; left: 50%;
+        transform-origin: top center;
+        transform: translate(-50%, -20px) scale(0.8);
+        opacity: 0;
+        pointer-events: none;
+        width: 300px;
+        transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+        }
+        /* when signupContainer is open, show + scale the form up */
+        #signupContainer.open #signupForm {
+          transform: translate(-50%, 0) scale(1);
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        /* hide the button while form is open */
+        #signupBtn {
+        transition: opacity 0.3s ease;
+        }
+        #signupContainer.open #signupBtn {
+        opacity: 0;
+        pointer-events: none;
+        }
+
+        @keyframes pulse {
+        0%, 100% { opacity: 0.4; }
+        50%      { opacity: 1; }
+        }
+        .scroll-hint {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 50;
+        animation: pulse 4s infinite ease-in-out;
+        transition: opacity 0.3s ease;
+        pointer-events: auto;
+        }
+
+        /* Fade out & disable when into the third section */
+        .scroll-up-hint {
+        position: fixed;
+        top: 3rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 50;
+        animation: pulse 4s infinite ease-in-out;
+        transition: opacity 0.3s ease;
+        pointer-events: auto;
+        }
+
+        /* hide until section-2/3 */
+        .scroll-up-hint.hidden {
+        opacity: 0;
+        pointer-events: none;
+        }
+        #features.expanded ~ .scroll-up-hint {
+          /* When the features section expands, nudge the scroll hint upward
+             using a larger negative margin so it clears the taller heading.
+             Without this, the hint can overlap the "Gentle Features"
+             title when the extra cards animate into view. */
+          margin-top: -3rem;
+          transition: margin-top 0.8s ease-out;
+        }
+
+
+        /* Collapse extra cards individually rather than the entire row. Each card
+           starts with zero max-height, zero opacity and a slight upward
+           translation so they don't occupy space. When the section is
+           expanded they animate to their natural height with a soft fade and
+           slide. */
+        .extra-card {
+          opacity: 0;
+          transform: translateY(-30px);
+          pointer-events: none;
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.8s ease, opacity 0.6s ease, transform 0.6s ease;
+          /* No transition delay by default; this can be overridden inline via a
+             CSS variable on each card if a staggered effect is desired. */
+        }
+
+        #features.expanded .extra-card {
+          opacity: 1;
+          transform: translateY(0);
+          pointer-events: auto;
+          max-height: 500px; /* sufficiently large to accommodate card content */
+        }
+
+
+        /* When the features section expands, align its contents to the top
+           instead of vertical centering.  By default `.section` uses flexbox
+           to centre its children; however, when the section grows taller
+           (revealing the extra cards) centering causes the header to sit
+           too low, leading to overlap with the scroll hint and requiring
+           unnecessary scrolling.  Overriding `align-items` to `flex-start`
+           anchors the content near the top of the viewport, emulating the
+           behaviour of the non-transition version while still allowing the
+           smooth expand/collapse animation. */
+        /* Remove any forced alignment changes on the expanded state.  Keeping
+           the default centering from the `.section` class maintains the
+           original layout, letting the added height of the extra cards
+           naturally push the header upward as intended. */
+
+        /*
+         * We intentionally avoid overriding the layout of the features section's
+         * container here.  The `.section` class already uses flexbox to
+         * vertically centre its contents, which keeps the header and cards
+         * centred on the page when collapsed.  When the section expands to
+         * show the extra feature cards the increased height naturally pushes
+         * the header upward.  Keeping the default layout also allows the
+         * existing `.scroll-up-hint` animation to work as before.
+         */
 
     </style>
 </head>
@@ -469,14 +574,16 @@
               
                 <!-- the form, absolutely positioned on top-right of the button -->
                 <div
-                  id="loginForm"
-                  class="login-form glass-card p-6 rounded-3xl"
-                  style="position:absolute; top:0; right:0; width:280px;"
-                >
-                  <input
-                    type="email"
-                    id="loginEmail"
-                    placeholder="Email"
+                id="loginForm"
+                class="login-form glass-card p-6 rounded-3xl"
+                style="position:absolute; top:0; right:0; width:280px;"
+              >
+                <h3 class="text-lg font-light mb-4 text-center opacity-90">Login</h3>
+                <input
+                  type="email"
+                  id="loginEmail"
+                  placeholder="Email"
+
                     class="w-full mb-4 px-3 py-2 rounded bg-white bg-opacity-20 border border-white border-opacity-40 focus:outline-none"
                   />
                   <input
@@ -492,6 +599,10 @@
                     <button id="confirmLogin" class="dream-button px-4 py-2 rounded-full text-sm">
                       Confirm
                     </button>
+                  </div>
+                  <p id="loginError" class="text-red-400 text-sm mt-2 hidden text-center">
+                    Login is not available. The app is still in development.
+                  </p>                  
                   </div>
                 </div>
               </div>
@@ -518,25 +629,60 @@
         <!-- Hero Section -->
         <section id="home" class="section relative overflow-hidden">
             <div class="container mx-auto px-6 relative z-10 text-center">
-                <h1 class="title-font text-5xl md:text-8xl font-light mb-6 fade-in">
-                    Find Your <span class="floating inline-block text-lavender">Peace</span>
-                </h1>
+              <h1 class="title-font text-5xl md:text-8xl font-light mb-6 fade-in">
+                <span class="text-sky-blue">Find</span> Your 
+                <span class="floating inline-block text-lavender">Peace</span>
+              </h1>            
                 <p class="text-xl md:text-2xl font-light max-w-3xl mx-auto mb-12 opacity-90 fade-in fade-in-delay-1">
                     Drift effortlessly into tranquility with our curated collection of calming experiences designed to soothe your soul and elevate your spirit.
                 </p>
                 <div class="flex flex-col items-center space-y-4 fade-in fade-in-delay-2">
-                    <a href="#about">
-                      <button class="dream-button px-10 py-4 rounded-full text-lg">
+                    <!-- morphing sign-up container -->
+                    <div id="signupContainer">
+                      <button
+                        id="signupBtn"
+                        class="dream-button px-10 py-4 rounded-full text-lg"
+                      >
                         Begin Journey
                       </button>
-                    </a>
-                    <a href="#about">
-                      <button class="dream-button px-10 py-4 rounded-full text-lg">
-                        Explore
-                      </button>
-                    </a>
-                  </div>                  
+                  
+                      <div id="signupForm" class="glass-card p-6 rounded-3xl">
+                        <h3 class="text-lg font-light mb-4 text-center opacity-90">Sign Up</h3>
+                        <input
+                          type="email"
+                          id="signupEmail"
+                          placeholder="Email"                      
+                          class="w-full mb-4 px-3 py-2 rounded bg-white bg-opacity-20 border border-white border-opacity-40 focus:outline-none"
+                        />
+                        <input
+                          type="password"
+                          id="signupPassword"
+                          placeholder="Password"
+                          class="w-full mb-4 px-3 py-2 rounded bg-white bg-opacity-20 border border-white border-opacity-40 focus:outline-none"
+                        />
+                        <div class="flex justify-end space-x-2">
+                          <button
+                            id="cancelSignup"
+                            class="dream-button px-4 py-2 rounded-full text-sm"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            id="confirmSignup"
+                            class="dream-button px-4 py-2 rounded-full text-sm"
+                          >
+                            Confirm
+                          </button>
+                        </div>
+                        <p id="signupError" class="text-red-400 text-sm mt-2 hidden text-center">
+                          Sign up is not available. The app is still in development.
+                        </p>                                                
+                        </div>
+                      </div>
+                    </div>
+                  </div>                                    
             </div>
+
         </section>
         
         <!-- About Section -->
@@ -546,9 +692,9 @@
                 
                 <!-- Text column -->
                 <div class="lg:w-1/2 fade-in">
-                <h2 class="title-font text-4xl md:text-6xl font-light mb-8 text-sky-blue">
-                    Our Philosophy
-                </h2>
+                  <h2 class="title-font text-4xl md:text-6xl font-light mb-8">
+                    <span class="text-white">Our</span> <span class="text-sky-blue">Philosophy</span>
+                </h2>                
                 <p class="text-lg md:text-xl font-light mb-6 opacity-90 leading-relaxed">
                     In a world that never stops moving, we create spaces for stillness. Our approach blends ancient wisdom with modern design to craft experiences that gently guide you back to yourself.
                 </p>
@@ -574,7 +720,6 @@
                     </div>
                 </div>
                 </div>
-                
             </div>
             </div>
         </section>
@@ -585,16 +730,16 @@
             <div class="container mx-auto px-6 relative z-10">
             <!-- Header -->
             <div class="text-center mb-16 fade-in">
-                <h2 class="title-font text-4xl md:text-6xl font-light mb-6 text-peach">
-                Gentle Features
-                </h2>
+              <h2 class="title-font text-4xl md:text-6xl font-light mb-6">
+                <span class="text-sky-blue">Gentle</span> <span class="text-peach">Features</span>
+              </h2>            
                 <p class="max-w-3xl mx-auto text-lg md:text-xl font-light opacity-90">
                 Designed with care to support your journey inward
                 </p>
             </div>
         
             <!-- Top row (3 cards) -->
-            <div class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
                 <!-- 1) Guided Meditations -->
                 <div class="glass-card tilt-card p-8 rounded-3xl fade-in fade-in-delay-1">
                 <div class="flex items-center mb-6">
@@ -681,6 +826,9 @@
             </div>
         
             <!-- Bottom row (3 extra cards) -->
+            <!-- The extra cards are always present in the DOM but start in a collapsed
+                 state (zero height and faded out). When the section is expanded
+                 they transition to full height with a gentle slide and fade. -->
             <div class="grid md:grid-cols-3 gap-8 mb-16">
                 <!-- 4) Sleep Stories (Coming Soon) -->
                 <div class="glass-card tilt-card p-8 rounded-3xl extra-card" style="position: relative;">
@@ -726,11 +874,11 @@
             </div>
         
             <!-- Toggle button -->
-            <div class="text-center fade-in fade-in-delay-4">
-                <button class="dream-button px-10 py-4 rounded-full text-lg">
+            <div class="text-center fade-in fade-in-delay-4 -mt-2">
+              <button class="dream-button px-10 py-4 rounded-full text-lg">
                 Explore All Features
-                </button>
-            </div>
+              </button>
+            </div>            
             </div>
         </section>
     
@@ -935,75 +1083,212 @@
         }, true);
         </script>
         <script>
-            // Show/hide extra feature cards
-            const features    = document.getElementById('features');
-            const toggleBtn   = features.querySelector('button.dream-button');
-            const extraCards  = features.querySelectorAll('.extra-card');
+          const features = document.getElementById('features');
+          const toggleBtn = features.querySelector('button.dream-button');
+        
+          toggleBtn.addEventListener('click', () => {
+            const isOpen = features.classList.toggle('expanded');
+            toggleBtn.textContent = isOpen ? 'Show Less' : 'Explore All Features';
+          });
+        </script>
+        
           
-            toggleBtn.addEventListener('click', () => {
-              extraCards.forEach(card => {
-                if (card.classList.contains('show')) {
-                  card.classList.remove('show');
-                  card.addEventListener('transitionend', () => card.style.display = 'none', { once: true });
-                } else {
-                  card.style.display = 'block';
-                  setTimeout(() => card.classList.add('show'), 20);
-                }
-              });
-              toggleBtn.textContent = toggleBtn.textContent.includes('Explore')
-                ? 'Show Less'
-                : 'Explore All Features';
+        <script>
+          // Keep references for mutual exclusion
+          const affirmationAudio   = document.getElementById('affirmationAudio');
+          const guidedAudio        = document.getElementById('guidedAudio');
+          const soundscapesAudio   = document.getElementById('soundscapesAudio');
+        
+          const affirmationBtn     = document.getElementById('affirmationPlay');
+          const guidedBtn          = document.getElementById('guidedPlay');
+          const soundscapesBtn     = document.getElementById('soundscapesPlay');
+        
+          const affirmationWave    = document.getElementById('affirmationWaveform');
+          const guidedWave         = document.getElementById('guidedWaveform');
+          const soundscapesWave    = document.getElementById('soundscapesWaveform');
+        
+          // Helper function to toggle play/pause
+          function toggleAudio(audio, btn, wave) {
+            if (audio.paused) {
+              if (!audio.src) audio.src = audio.dataset.src;
+              audio.play();
+              wave.classList.add('playing');
+              btn.querySelector('svg path').setAttribute('d','M4 4h4v12H4z M12 4h4v12h-4z');
+            } else {
+              audio.pause();
+              audio.currentTime = 0;
+              wave.classList.remove('playing');
+              btn.querySelector('svg path').setAttribute('d','M6 4l12 6-12 6V4z');
+            }
+          }
+        
+          // Mutual exclusion for voice audios (Affirmations & Guided)
+          affirmationBtn.addEventListener('click', () => {
+            // Stop guided if playing
+            if (!guidedAudio.paused) {
+              guidedAudio.pause();
+              guidedAudio.currentTime = 0;
+              guidedWave.classList.remove('playing');
+              guidedBtn.querySelector('svg path').setAttribute('d','M6 4l12 6-12 6V4z');
+            }
+            toggleAudio(affirmationAudio, affirmationBtn, affirmationWave);
+          });
+        
+          guidedBtn.addEventListener('click', () => {
+            // Stop affirmations if playing
+            if (!affirmationAudio.paused) {
+              affirmationAudio.pause();
+              affirmationAudio.currentTime = 0;
+              affirmationWave.classList.remove('playing');
+              affirmationBtn.querySelector('svg path').setAttribute('d','M6 4l12 6-12 6V4z');
+            }
+            toggleAudio(guidedAudio, guidedBtn, guidedWave);
+          });
+        
+          // Soundscapes remain independent
+          soundscapesBtn.addEventListener('click', () => {
+            toggleAudio(soundscapesAudio, soundscapesBtn, soundscapesWave);
+          });
+        
+          // Reset buttons & waves on audio end
+          [ 
+            {audio: affirmationAudio, btn: affirmationBtn, wave: affirmationWave},
+            {audio: guidedAudio, btn: guidedBtn, wave: guidedWave},
+            {audio: soundscapesAudio, btn: soundscapesBtn, wave: soundscapesWave}
+          ].forEach(({audio, btn, wave}) => {
+            audio.addEventListener('ended', () => {
+              wave.classList.remove('playing');
+              btn.querySelector('svg path').setAttribute('d','M6 4l12 6-12 6V4z');
             });
-          </script>
-          
-          <script>
-            // DRY audio + waveform logic for all three cards
-            const setups = [
-              { btn: 'affirmationPlay', audio: 'affirmationAudio', wave: 'affirmationWaveform' },
-              { btn: 'soundscapesPlay', audio: 'soundscapesAudio', wave: 'soundscapesWaveform' },
-              { btn: 'guidedPlay',       audio: 'guidedAudio',       wave: 'guidedWaveform' }
-            ];
-          
-            setups.forEach(({ btn, audio, wave }) => {
-              const b = document.getElementById(btn);
-              const a = document.getElementById(audio);
-              const w = document.getElementById(wave);
-          
-              b.addEventListener('click', () => {
-                if (a.paused) {
-                    if (!a.src) a.src = a.dataset.src;
-                    a.play();
-                  w.classList.add('playing');
-                  b.querySelector('svg path').setAttribute('d','M4 4h4v12H4z M12 4h4v12h-4z');
-                } else {
-                  a.pause();
-                  a.currentTime = 0;
-                  w.classList.remove('playing');
-                  b.querySelector('svg path').setAttribute('d','M6 4l12 6-12 6V4z');
-                }
-              });
-          
-              a.addEventListener('ended', () => {
-                w.classList.remove('playing');
-                b.querySelector('svg path').setAttribute('d','M6 4l12 6-12 6V4z');
-              });
-            });
-          </script>
+          });
+        </script>        
           <script>
             const loginBtn       = document.getElementById('loginBtn');
             const loginContainer = document.getElementById('loginContainer');
             const cancelLogin    = document.getElementById('cancelLogin');
           
-            // Toggle form open/close
+            const signupBtn       = document.getElementById('signupBtn');
+            const signupContainer = document.getElementById('signupContainer');
+            const cancelSignup    = document.getElementById('cancelSignup');
+          
+            // LOGIN toggle
             loginBtn.addEventListener('click', () => {
-              loginContainer.classList.toggle('open');
+              const willOpen = !loginContainer.classList.contains('open');
+              // Always close signup first
+              signupContainer.classList.remove('open');
+              // Toggle login depending on previous state
+              loginContainer.classList.toggle('open', willOpen);
             });
           
-            // Close form
             cancelLogin.addEventListener('click', () => {
               loginContainer.classList.remove('open');
             });
+          
+            // SIGNUP toggle
+            signupBtn.addEventListener('click', () => {
+              const willOpen = !signupContainer.classList.contains('open');
+              // Always close login first
+              loginContainer.classList.remove('open');
+              // Toggle signup depending on previous state
+              signupContainer.classList.toggle('open', willOpen);
+            });
+          
+            cancelSignup.addEventListener('click', () => {
+              signupContainer.classList.remove('open');
+            });
           </script>          
-                                                                         
+          <script>
+            const confirmLogin  = document.getElementById('confirmLogin');
+            const confirmSignup = document.getElementById('confirmSignup');
+            const loginError    = document.getElementById('loginError');
+            const signupError   = document.getElementById('signupError');
+          
+            confirmLogin.addEventListener('click', (e) => {
+              e.preventDefault();
+              loginError.classList.remove('hidden');
+            });
+          
+            confirmSignup.addEventListener('click', (e) => {
+              e.preventDefault();
+              signupError.classList.remove('hidden');
+            });
+          </script>          
+          <!-- Floating Scroll-to-Top Hint -->
+            <div class="scroll-up-hint flex flex-col items-center text-white opacity-75 cursor-none hidden">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 mb-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2">
+                <!-- up arrow -->
+                <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M5 15l7-7 7 7" />
+                </svg>
+                <span class="text-sm">Scroll to top</span>
+            </div>                    
+          
+          <!-- Floating Scroll-to-Continue Hint -->
+            <div
+            class="scroll-hint flex flex-col items-center text-white opacity-75 cursor-none"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 mb-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M19 9l-7 7-7-7" />
+            </svg>
+            <span class="text-sm">Scroll to continue</span>
+            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                  const hint    = document.querySelector('.scroll-hint');
+                  const feature = document.getElementById('features');
+              
+                  function updateHint() {
+                    // If we've scrolled into the features section, hide; else show
+                    if (window.scrollY + window.innerHeight >= feature.offsetTop + 20) {
+                      hint.classList.add('hidden');
+                    } else {
+                      hint.classList.remove('hidden');
+                    }
+                  }
+              
+                  // smooth scroll on click
+                  hint.addEventListener('click', () => {
+                    window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+                  });
+              
+                  window.addEventListener('scroll', updateHint);
+                  updateHint();
+                });
+              </script>     
+              <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                  const upHint    = document.querySelector('.scroll-up-hint');
+                  const about     = document.getElementById('about');
+                  
+                  function updateUp() {
+                    // show only once we've scrolled into the About section (Section 2) or beyond
+                    if (window.scrollY >= about.offsetTop) {
+                      upHint.classList.remove('hidden');
+                    } else {
+                      upHint.classList.add('hidden');
+                    }
+                  }
+                  
+                  // smooth scroll up one viewport
+                  upHint.addEventListener('click', () => {
+                    window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
+                  });
+                  
+                  window.addEventListener('scroll', updateUp);
+                  updateUp();
+                });
+              </script>                       
+                                                       
 </body>
 </html>
